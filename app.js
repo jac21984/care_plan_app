@@ -1,15 +1,31 @@
-// 🔗 Replace this with your deployed Apps Script Web App URL
-const API = "https://script.google.com/macros/s/AKfycbzKpLCkIQFbe4XeYWLZ5QRk9mfSkvH2ggt2u2jn6WKbrIWKKXpTrheb2cfot4J7X6oV-Q/exec";
+// 🔗 Your deployed Apps Script Web App URL
+const API = "https://script.google.com/macros/s/AKfycbwMGzHuzxf81qsGb0AOLPaPny6gw85lBRL8DDFvUbQypTan0LGBqa73xhqALt2-CvOInQ/exec";
+
+// 🔐 Shared secret API key (must match Apps Script)
+const API_KEY = "MY_SUPER_SECRET_KEY_9834hf9834hf9834hf9834hf";
 
 // State
 let selectedTopics = new Set();
 let selectedResources = new Set();
 
-// Utility: status messages
+// Status helper
 function setStatus(message, type = "info") {
   const el = document.getElementById("statusArea");
   el.textContent = message;
   el.style.color = type === "error" ? "#c0392b" : "#7b8194";
+}
+
+// Form helpers
+function getClientEmail() {
+  return document.getElementById("clientEmail").value.trim();
+}
+
+function getClientName() {
+  return document.getElementById("clientName").value.trim();
+}
+
+function getClientNotes() {
+  return document.getElementById("clientNotes").value.trim();
 }
 
 // Sync button
@@ -18,13 +34,16 @@ document.getElementById("syncBtn").onclick = () => {
 
   fetch(API, {
     method: "POST",
-    body: JSON.stringify({ action: "fullSync" })
+    body: JSON.stringify({
+      apiKey: API_KEY,
+      action: "fullSync"
+    })
   })
     .then(r => r.json())
     .then(data => {
       console.log("Sync complete:", data);
       setStatus("Resources synced successfully.");
-      loadTopics(); // refresh topics after sync
+      loadTopics();
     })
     .catch(err => {
       console.error(err);
@@ -32,13 +51,16 @@ document.getElementById("syncBtn").onclick = () => {
     });
 };
 
-// Load topics from backend
+// Load topics
 function loadTopics() {
   setStatus("Loading topics…");
 
   fetch(API, {
     method: "POST",
-    body: JSON.stringify({ action: "getTopics" })
+    body: JSON.stringify({
+      apiKey: API_KEY,
+      action: "getTopics"
+    })
   })
     .then(r => r.json())
     .then(topics => {
@@ -73,7 +95,7 @@ function loadTopics() {
     });
 }
 
-// Load resources for selected topics
+// Load resources
 function loadResources() {
   const topicsArray = Array.from(selectedTopics);
   setStatus("Loading resources…");
@@ -81,6 +103,7 @@ function loadResources() {
   fetch(API, {
     method: "POST",
     body: JSON.stringify({
+      apiKey: API_KEY,
       action: "getResources",
       topics: topicsArray
     })
@@ -130,14 +153,32 @@ document.getElementById("generatePdfBtn").onclick = () => {
   const topicsArray = Array.from(selectedTopics);
   const resourcesArray = Array.from(selectedResources);
 
+  const clientEmail = getClientEmail();
+  const clientName = getClientName();
+  const clientNotes = getClientNotes();
+
+  if (!clientName) {
+    setStatus("Please enter the client's name.", "error");
+    return;
+  }
+
+  if (!clientEmail) {
+    setStatus("Please enter the client's email.", "error");
+    return;
+  }
+
   setStatus("Generating PDF…");
 
   fetch(API, {
     method: "POST",
     body: JSON.stringify({
+      apiKey: API_KEY,
       action: "generatePdf",
       topics: topicsArray,
-      resources: resourcesArray
+      resources: resourcesArray,
+      clientEmail,
+      clientName,
+      clientNotes
     })
   })
     .then(r => r.json())
@@ -156,14 +197,32 @@ document.getElementById("emailPdfBtn").onclick = () => {
   const topicsArray = Array.from(selectedTopics);
   const resourcesArray = Array.from(selectedResources);
 
+  const clientEmail = getClientEmail();
+  const clientName = getClientName();
+  const clientNotes = getClientNotes();
+
+  if (!clientName) {
+    setStatus("Please enter the client's name.", "error");
+    return;
+  }
+
+  if (!clientEmail) {
+    setStatus("Please enter the client's email.", "error");
+    return;
+  }
+
   setStatus("Emailing PDF…");
 
   fetch(API, {
     method: "POST",
     body: JSON.stringify({
+      apiKey: API_KEY,
       action: "emailPdf",
       topics: topicsArray,
-      resources: resourcesArray
+      resources: resourcesArray,
+      clientEmail,
+      clientName,
+      clientNotes
     })
   })
     .then(r => r.json())
