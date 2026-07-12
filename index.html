@@ -41,9 +41,25 @@
 
     <section class="panel">
       <div class="panel-header">
-        <h2>3. Care Plan Actions</h2>
-        <p>Generate and send the care plan to the client.</p>
+        <h2>3. Care Plan Details & Actions</h2>
+        <p>Enter client info, notes, then generate and send the care plan.</p>
       </div>
+
+      <div class="form-group">
+        <label for="clientName">Client Name</label>
+        <input id="clientName" type="text" placeholder="Jane Doe" class="input-text">
+      </div>
+
+      <div class="form-group">
+        <label for="clientEmail">Client Email</label>
+        <input id="clientEmail" type="email" placeholder="client@example.com" class="input-text">
+      </div>
+
+      <div class="form-group">
+        <label for="clientNotes">Consultant Notes</label>
+        <textarea id="clientNotes" placeholder="Add personalized notes here…" class="input-textarea"></textarea>
+      </div>
+
       <div class="actions-row">
         <button id="generatePdfBtn" class="btn btn-secondary">
           📄 Generate PDF
@@ -52,6 +68,7 @@
           ✉️ Email PDF
         </button>
       </div>
+
       <div id="statusArea" class="status-area"></div>
     </section>
 
