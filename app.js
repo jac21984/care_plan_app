@@ -2,11 +2,11 @@
 const API = "https://script.google.com/macros/s/AKfycbyXb8dYIEYQx0k27-aeKX61NZNK_t7lf7lDCla8OmgAd837Chu9kYv0GMhwWTa7VkrvrQ/exec";
 
 // 🔐 Shared secret API key (must match Apps Script)
-const API_KEY = "MY_SUPER_SECRET_KEY_9834hf9834hf9834hf9834hf";
+const API_KEY = "MY_ULTRA_SECRET_KEY_92jf02jf02jf02jf02jf02jf02j"; // <-- use your real key
 
 // State
-let catalog = [];          // full list of resources from backend
-let selectedItems = new Set(); // ids of selected items
+let catalog = [];               // full list of resources from backend
+let selectedItems = new Set();  // ids of selected items
 
 // Status helper
 function setStatus(message, type = "info") {
@@ -85,7 +85,7 @@ function loadCatalog() {
     body: JSON.stringify({
       apiKey: API_KEY,
       action: "getResources",
-      topics: [] // empty = all
+      topics: [] // empty = all resources
     })
   })
     .then(r => r.json())
@@ -106,7 +106,7 @@ function buildCategoryTree() {
   const container = document.getElementById("categoryList");
   container.innerHTML = "";
 
-  // Group by topic (acts as category)
+  // Group by topic (acts as category for now)
   const categoriesMap = new Map();
 
   catalog.forEach(res => {
@@ -184,7 +184,6 @@ function buildCategoryTree() {
           selectedItems.delete(key);
         }
       });
-      // Update all item checkboxes in this category
       const itemCheckboxes = itemListEl.querySelectorAll("input[type='checkbox']");
       itemCheckboxes.forEach(cb => {
         cb.checked = checked;
@@ -193,7 +192,6 @@ function buildCategoryTree() {
 
     // Toggle dropdown
     headerEl.onclick = (e) => {
-      // avoid double-trigger when clicking checkbox
       if (e.target === checkboxEl) return;
       const isOpen = itemListEl.classList.toggle("open");
       toggleEl.classList.toggle("open", isOpen);
@@ -208,7 +206,6 @@ function buildCategoryTree() {
 
     container.appendChild(categoryEl);
 
-    // Initial category checkbox state
     updateCategoryCheckboxState(checkboxEl, items);
   });
 }
