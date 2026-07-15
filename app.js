@@ -1,11 +1,11 @@
 // 🔗 Your deployed Apps Script Web App URL
-const API = "https://script.google.com/macros/s/AKfycbxcCW6oGiB0Rp4L6LP2YCDWlWxc72chsrjtkCrq52WPzpYIYLuTqT47vdG1hUQ8CwDszA/exec";
+const API = "https://script.google.com/macros/s/AKfycbwtjG1GYjUdMTfIb1yRdb-cAN2jYUR3IccSgW1a4WAvSZGoU977h_DbXf3_7d4THLYZUg/exec";
 
 // 🔐 Shared secret API key (must match Apps Script)
-const API_KEY = "MY_ULTRA_SECRET_KEY_92jf02jf02jf02jf02jf02jf02j"; // <-- use your real key
+const API_KEY = "MY_SUPER_SECRET_KEY_9834hf9834hf9834hf9834hf";
 
 // State
-let catalog = [];               // full list of resources from backend
+let catalog = {};               // category → items[]
 let selectedItems = new Set();  // ids of selected items
 
 // Status helper
@@ -45,7 +45,6 @@ syncBtn.onclick = () => {
     .then(r => r.json())
     .then(data => {
       console.log("Sync complete:", data);
-      setStatus("Resources synced successfully.");
       stopSyncAnimation(true);
       loadCatalog();
     })
@@ -76,7 +75,7 @@ function stopSyncAnimation(success) {
   }
 }
 
-// Load catalog (all resources) and build category tree
+// Load catalog (all categories + items)
 function loadCatalog() {
   setStatus("Loading catalog…");
 
@@ -84,13 +83,13 @@ function loadCatalog() {
     method: "POST",
     body: JSON.stringify({
       apiKey: API_KEY,
-      action: "getResources",
-      topics: [] // empty = all resources
+      action: "getCatalog"
     })
   })
     .then(r => r.json())
-    .then(resources => {
-      catalog = resources || [];
+    .then(data => {
+      console.log("Catalog:", data);
+      catalog = data || {};
       selectedItems.clear();
       buildCategoryTree();
       setStatus("Catalog loaded.");
@@ -106,18 +105,9 @@ function buildCategoryTree() {
   const container = document.getElementById("categoryList");
   container.innerHTML = "";
 
-  // Group by topic (acts as category for now)
-  const categoriesMap = new Map();
+  Object.keys(catalog).forEach(categoryName => {
+    const items = catalog[categoryName];
 
-  catalog.forEach(res => {
-    const topic = res.topic || "Uncategorized";
-    if (!categoriesMap.has(topic)) {
-      categoriesMap.set(topic, []);
-    }
-    categoriesMap.get(topic).push(res);
-  });
-
-  categoriesMap.forEach((items, categoryName) => {
     const categoryEl = document.createElement("div");
     categoryEl.className = "category";
 
@@ -146,7 +136,7 @@ function buildCategoryTree() {
       const itemCheckbox = document.createElement("input");
       itemCheckbox.type = "checkbox";
 
-      const key = res.id || res.title;
+      const key = res.id;
       itemCheckbox.checked = selectedItems.has(key);
 
       itemCheckbox.onchange = () => {
@@ -160,11 +150,11 @@ function buildCategoryTree() {
 
       const itemTitle = document.createElement("div");
       itemTitle.className = "item-title";
-      itemTitle.textContent = res.title || "Untitled";
+      itemTitle.textContent = res.title;
 
       const itemMeta = document.createElement("div");
       itemMeta.className = "item-meta";
-      itemMeta.textContent = `${res.type || "Unknown"} · ${categoryName}`;
+      itemMeta.textContent = `${res.type} · ${categoryName}`;
 
       rowEl.appendChild(itemCheckbox);
       rowEl.appendChild(itemTitle);
@@ -177,7 +167,7 @@ function buildCategoryTree() {
     checkboxEl.onchange = () => {
       const checked = checkboxEl.checked;
       items.forEach(res => {
-        const key = res.id || res.title;
+        const key = res.id;
         if (checked) {
           selectedItems.add(key);
         } else {
@@ -214,8 +204,7 @@ function buildCategoryTree() {
 function updateCategoryCheckboxState(categoryCheckbox, items) {
   let selectedCount = 0;
   items.forEach(res => {
-    const key = res.id || res.title;
-    if (selectedItems.has(key)) selectedCount++;
+    if (selectedItems.has(res.id)) selectedCount++;
   });
 
   if (selectedCount === 0) {
@@ -232,11 +221,12 @@ function updateCategoryCheckboxState(categoryCheckbox, items) {
 // Helper: get selected resource objects
 function getSelectedResources() {
   const selected = [];
-  catalog.forEach(res => {
-    const key = res.id || res.title;
-    if (selectedItems.has(key)) {
-      selected.push(res);
-    }
+  Object.keys(catalog).forEach(category => {
+    catalog[category].forEach(res => {
+      if (selectedItems.has(res.id)) {
+        selected.push(res);
+      }
+    });
   });
   return selected;
 }
@@ -249,24 +239,9 @@ document.getElementById("generatePdfBtn").onclick = () => {
   const clientName = getClientName();
   const clientNotes = getClientNotes();
 
-  if (!clientName) {
-    setStatus("Please enter the client's name.", "error");
-    return;
-  }
-
-  if (!clientEmail) {
-    setStatus("Please enter the client's email.", "error");
-    return;
-  }
-
-  if (resourcesArray.length === 0) {
-    setStatus("Please select at least one item.", "error");
-    return;
-  }
-
-  const topicsArray = Array.from(
-    new Set(resourcesArray.map(r => r.topic || "Uncategorized"))
-  );
+  if (!clientName) return setStatus("Please enter the client's name.", "error");
+  if (!clientEmail) return setStatus("Please enter the client's email.", "error");
+  if (resourcesArray.length === 0) return setStatus("Please select at least one item.", "error");
 
   setStatus("Generating PDF…");
 
@@ -275,7 +250,6 @@ document.getElementById("generatePdfBtn").onclick = () => {
     body: JSON.stringify({
       apiKey: API_KEY,
       action: "generatePdf",
-      topics: topicsArray,
       resources: resourcesArray,
       clientEmail,
       clientName,
@@ -305,24 +279,9 @@ document.getElementById("emailPdfBtn").onclick = () => {
   const clientName = getClientName();
   const clientNotes = getClientNotes();
 
-  if (!clientName) {
-    setStatus("Please enter the client's name.", "error");
-    return;
-  }
-
-  if (!clientEmail) {
-    setStatus("Please enter the client's email.", "error");
-    return;
-  }
-
-  if (resourcesArray.length === 0) {
-    setStatus("Please select at least one item.", "error");
-    return;
-  }
-
-  const topicsArray = Array.from(
-    new Set(resourcesArray.map(r => r.topic || "Uncategorized"))
-  );
+  if (!clientName) return setStatus("Please enter the client's name.", "error");
+  if (!clientEmail) return setStatus("Please enter the client's email.", "error");
+  if (resourcesArray.length === 0) return setStatus("Please select at least one item.", "error");
 
   setStatus("Emailing PDF…");
 
@@ -331,7 +290,6 @@ document.getElementById("emailPdfBtn").onclick = () => {
     body: JSON.stringify({
       apiKey: API_KEY,
       action: "emailPdf",
-      topics: topicsArray,
       resources: resourcesArray,
       clientEmail,
       clientName,
