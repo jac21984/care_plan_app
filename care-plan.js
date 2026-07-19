@@ -7,8 +7,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getSelectedResourcesStub() {
     return [
-      { title: "Latch Technique", description: "Video on deep latch.", url: "https://example.com/latch" },
-      { title: "Paced Bottle Feeding", description: "Article on paced feeding.", url: "https://example.com/bottle" }
+      {
+        title: "Latch Technique",
+        description: "Video on deep latch.",
+        url: "https://example.com/latch"
+      },
+      {
+        title: "Paced Bottle Feeding",
+        description: "Article on paced feeding.",
+        url: "https://example.com/bottle"
+      }
     ];
   }
 
