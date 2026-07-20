@@ -1,199 +1,87 @@
-let activeDatabase = null;
-let settings = {
-  defaultSignature: "",
-  defaultEmailTemplate: "clinical",
-  defaultPdfBranding: { headerText: "Care Plan" }
-};
+/* HAMBURGER MENU */
+const hamburgerBtn = document.getElementById("hamburgerBtn");
+const hamburgerMenu = document.getElementById("hamburgerMenu");
+const hamburgerOverlay = document.getElementById("hamburgerOverlay");
 
-/* NAVIGATION */
-function showPage(id) {
-  document.querySelectorAll("main .panel").forEach(p => p.classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
-}
-
-function initMenu() {
-  const menuBtn = document.getElementById("menuBtn");
-  const menu = document.getElementById("headerMenu");
-
-  menuBtn.addEventListener("click", () => {
-    menu.classList.toggle("hidden");
+if (hamburgerBtn && hamburgerMenu && hamburgerOverlay) {
+  hamburgerBtn.addEventListener("click", () => {
+    hamburgerMenu.classList.toggle("active");
+    hamburgerOverlay.classList.toggle("active");
   });
 
-  menu.querySelectorAll("button[data-target]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const target = btn.getAttribute("data-target");
-      showPage(target);
-      menu.classList.add("hidden");
-    });
-  });
-
-  document.getElementById("goToDatabaseBtn").addEventListener("click", () => {
-    showPage("databasePage");
-  });
-
-  document.getElementById("startCarePlanBtn").addEventListener("click", () => {
-    showPage("carePlanPage");
-  });
-
-  document.getElementById("addResourceBtn").addEventListener("click", () => {
-    showPage("resourcePage");
-  });
-
-  document.getElementById("switchDatabaseBtn").addEventListener("click", () => {
-    showPage("databasePage");
+  hamburgerOverlay.addEventListener("click", () => {
+    hamburgerMenu.classList.remove("active");
+    hamburgerOverlay.classList.remove("active");
   });
 }
 
-/* HOME PAGE */
-function updateHomePage() {
-  const noDb = document.getElementById("homeNoDbMessage");
-  const content = document.getElementById("homeContent");
+/* CRM LOGIC (only runs on client.html) */
+if (document.getElementById("clientList")) {
 
-  if (!activeDatabase) {
-    noDb.classList.remove("hidden");
-    content.classList.add("hidden");
-    return;
-  }
-
-  noDb.classList.add("hidden");
-  content.classList.remove("hidden");
-
-  document.getElementById("homeDbName").textContent =
-    `Active Database: ${activeDatabase.name}`;
-  document.getElementById("homeDbStats").textContent =
-    `Topics: ${activeDatabase.topicCount}  Resources: ${activeDatabase.resourceCount}`;
-
-  const list = document.getElementById("recentCarePlansList");
-  list.innerHTML = "";
-  (activeDatabase.recentCarePlans || []).forEach(cp => {
-    const li = document.createElement("li");
-    li.textContent = `${cp.client} — ${cp.date} — ${cp.topics} — ${cp.status}`;
-    list.appendChild(li);
-  });
-}
-
-/* SYSTEM STATUS */
-function checkSystemStatus() {
-  const icon = document.getElementById("systemStatusIcon");
-  const healthList = document.getElementById("systemHealthList");
-  healthList.innerHTML = "";
-
-  const checks = [
-    { name: "Backend", ok: !!window.BACKEND_STATUS_OK },
-    { name: "Database", ok: !!activeDatabase },
-    { name: "PDF Generator", ok: true },
-    { name: "Email Sender", ok: true }
+  const clients = [
+    {
+      id: "c1",
+      name: "Sarah Martinez",
+      email: "sarah@example.com",
+      overview: "First‑time mom, focusing on latch and bottle introduction.",
+      carePlans: [
+        { title: "Initial Latch Plan", date: "2026‑07‑10", status: "Sent" },
+        { title: "Bottle Introduction", date: "2026‑07‑15", status: "Draft" }
+      ],
+      resources: [
+        { title: "Latch Video", type: "Video" },
+        { title: "Bottle Feeding PDF", type: "PDF" }
+      ],
+      notes: "Prefers evening sessions. Baby has mild reflux."
+    },
+    {
+      id: "c2",
+      name: "Emma Roberts",
+      email: "emma@example.com",
+      overview: "Returning to work, pumping schedule and storage.",
+      carePlans: [
+        { title: "Pumping Schedule", date: "2026‑07‑08", status: "Sent" }
+      ],
+      resources: [
+        { title: "Pumping Guide", type: "Article" }
+      ],
+      notes: "Needs follow‑up on workplace accommodations."
+    }
   ];
 
-  icon.textContent = checks.every(c => c.ok) ? "✔" : "✖";
+  let activeClientId = null;
 
-  checks.forEach(c => {
-    const li = document.createElement("li");
-    li.textContent = `${c.name}: ${c.ok ? "✔" : "✖"}`;
-    healthList.appendChild(li);
-  });
-}
+  function renderClientList() {
+    const listEl = document.getElementById("clientList");
+    const mobileSelect = document.getElementById("mobileClientSelect");
 
-function initSystemStatusModal() {
-  const popup = document.getElementById("systemStatusPopup");
-  const modal = document.getElementById("systemStatusModal");
-  const closeBtn = document.getElementById("closeSystemStatusModalBtn");
+    listEl.innerHTML = "";
+    mobileSelect.innerHTML = "<option value=''>Select client...</option>";
 
-  popup.addEventListener("click", () => {
-    checkSystemStatus();
-    modal.classList.remove("hidden");
-  });
+    clients.forEach(client => {
+      const li = document.createElement("li");
+      li.textContent = client.name;
+      li.dataset.clientId = client.id;
+      li.addEventListener("click", () => selectClient(client.id));
+      listEl.appendChild(li);
 
-  closeBtn.addEventListener("click", () => {
-    modal.classList.add("hidden");
-  });
-}
-
-/* DATABASE MANAGER */
-function initDatabaseManager() {
-  document.getElementById("activateDummyDbBtn").addEventListener("click", () => {
-    activeDatabase = {
-      name: "Apex (Primary)",
-      topicCount: 12,
-      resourceCount: 87,
-      outputFolderId: "1Kt_2tV94NNhTLl7GRpkE6D8wlHhgiXsc",
-      topicsFolderId: "1IjzDqshgZjGVaT256BicUPnu070AL2wJ",
-      resourcesFolderId: "1LuLI2kgJa5pUzcnvqyKhJ8ux1tpDaH_B",
-      appConfigFolderId: "1ntyRVFYhpiNWoxPle-t2PvSujnmCCa0v",
-      recentCarePlans: [
-        { client: "Sarah M.", date: "Jul 15", topics: "Latch, Bottle Feeding", status: "PDF, Sent" },
-        { client: "Emma R.", date: "Jul 14", topics: "Pumping", status: "PDF, Sent" },
-        { client: "Jacob T.", date: "Jul 13", topics: "Sleep Training", status: "PDF, Not Sent" }
-      ]
-    };
-    updateHomePage();
-    showPage("homePage");
-  });
-
-  document.getElementById("createDbBtn").addEventListener("click", async () => {
-    const name = document.getElementById("newDbName").value.trim();
-    const status = document.getElementById("createDbStatus");
-
-    if (!name) {
-      status.textContent = "Enter a database name.";
-      return;
-    }
-
-    status.textContent = "Creating database...";
-
-    try {
-      const result = await apiCreateDatabase(name);
-      activeDatabase = result.database;
-      updateHomePage();
-      status.textContent = "Database created.";
-    } catch (e) {
-      status.textContent = "Error creating database.";
-    }
-  });
-}
-
-/* SETTINGS */
-function initSettingsPanel() {
-  document.getElementById("saveSettingsBtn").addEventListener("click", () => {
-    settings.defaultSignature = document.getElementById("settingsSignatureInput").value;
-    settings.defaultEmailTemplate = document.getElementById("settingsEmailTemplateSelect").value;
-    settings.defaultPdfBranding.headerText =
-      document.getElementById("settingsPdfHeaderInput").value;
-
-    alert("Settings saved.");
-  });
-}
-
-/* RESOURCE MODES (simple stub) */
-function initResourceManager() {
-  const container = document.getElementById("resourceModeContainer");
-
-  document.getElementById("singleResourceModeBtn").addEventListener("click", () => {
-    container.innerHTML = "<p>Single Resource mode (future: form to add one resource).</p>";
-  });
-
-  document.getElementById("bulkResourceModeBtn").addEventListener("click", () => {
-    container.innerHTML = "<p>Bulk Upload mode (future: upload CSV or multiple files).</p>";
-  });
-
-  document.getElementById("urlResourceModeBtn").addEventListener("click", () => {
-    container.innerHTML = "<p>Add URL mode (future: add external links as resources).</p>";
-  });
-}
-
-/* INIT */
-document.addEventListener("DOMContentLoaded", async () => {
-  initMenu();
-  initSystemStatusModal();
-  initDatabaseManager();
-  initSettingsPanel();
-  initResourceManager();
-  showPage("homePage");
-
-  try {
-    const res = await pingBackend();
-    window.BACKEND_STATUS_OK = true;
-  } catch {
-    window.BACKEND_STATUS_OK = false;
+      const opt = document.createElement("option");
+      opt.value = client.id;
+      opt.textContent = client.name;
+      mobileSelect.appendChild(opt);
+    });
   }
-});
+
+  function selectClient(id) {
+    activeClientId = id;
+    const client = clients.find(c => c.id === id);
+
+    document.querySelectorAll("#clientList li").forEach(li => {
+      li.classList.toggle("active", li.dataset.clientId === id);
+    });
+
+    document.getElementById("mobileClientSelect").value = id;
+
+    document.getElementById("clientNameDisplay").textContent = client.name;
+    document.getElementById("clientEmailDisplay").textContent = client.email;
+    document.getElementById("clientOverviewText").textContent = client.overview;
