@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resource Manager</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <header class="app-header">
+    <span class="app-title">Resource Manager</span>
+
+    <button id="hamburgerBtn" class="hamburger-btn">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </header>
+
+  <div id="hamburgerOverlay" class="hamburger-overlay"></div>
+
+  <nav id="hamburgerMenu" class="hamburger-menu">
+    <a class="menu-item" href="index.html">Home</a>
+    <a class="menu-item" href="client.html">Clients</a>
+    <a class="menu-item" href="database.html">Database Manager</a>
+    <a class="menu-item" href="resources.html">Resource Manager</a>
+    <a class="menu-item" href="settings.html">Settings</a>
+  </nav>
+
+  <main class="page-panel active">
+    <h2>Resource Manager</h2>
+    <p>Manage your educational resources.</p>
+
+    <div class="resource-actions">
+      <button class="primary-btn">Add Resource</button>
+      <button class="primary-btn">Bulk Import Resources</button>
+      <button class="primary-btn">Add URL Resource</button>
+    </div>
+
+    <h3>Existing Resources</h3>
+    <ul id="resourceManagerList">
+      <li>Latch Video (Video)</li>
+      <li>Bottle Feeding PDF (PDF)</li>
+      <li>Pumping Guide (Article)</li>
+    </ul>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
