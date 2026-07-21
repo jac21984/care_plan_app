@@ -9,11 +9,14 @@
 
 <body>
 
+  <!-- HEADER -->
   <header class="app-header">
     <span class="app-title">Care Plan CRM</span>
 
+    <!-- MOBILE CLIENT DROPDOWN BUTTON -->
     <button id="mobileClientToggle" class="icon-btn mobile-only">Clients ▾</button>
 
+    <!-- HAMBURGER BUTTON (desktop + mobile) -->
     <button id="hamburgerBtn" class="hamburger-btn">
       <span class="hamburger-line"></span>
       <span class="hamburger-line"></span>
@@ -21,8 +24,10 @@
     </button>
   </header>
 
+  <!-- OVERLAY -->
   <div id="hamburgerOverlay" class="hamburger-overlay"></div>
 
+  <!-- FLOATING RIGHT-SIDE HAMBURGER CARD -->
   <nav id="hamburgerMenu" class="hamburger-menu">
     <a class="menu-item" href="index.html">Home</a>
     <a class="menu-item" href="client.html">Clients</a>
@@ -31,19 +36,24 @@
     <a class="menu-item" href="settings.html">Settings</a>
   </nav>
 
+  <!-- MAIN CRM LAYOUT (unchanged) -->
   <main class="crm-layout">
 
+    <!-- CLIENT LIST (DESKTOP) -->
     <aside class="client-list-panel">
       <h2>Clients</h2>
       <ul id="clientList"></ul>
     </aside>
 
+    <!-- CLIENT DETAIL PANEL -->
     <section class="client-detail-panel">
 
+      <!-- MOBILE CLIENT SELECTOR -->
       <div class="mobile-client-selector mobile-only">
         <select id="mobileClientSelect"></select>
       </div>
 
+      <!-- CLIENT HEADER -->
       <div class="client-header">
         <div>
           <h2 id="clientNameDisplay">Select a client</h2>
@@ -55,6 +65,7 @@
         </div>
       </div>
 
+      <!-- DESKTOP TABS -->
       <nav class="detail-tabs desktop-only">
         <button data-tab="overviewTab" class="tab-btn active">Overview</button>
         <button data-tab="carePlansTab" class="tab-btn">Care Plans</button>
@@ -63,6 +74,7 @@
         <button data-tab="actionsTab" class="tab-btn">Actions</button>
       </nav>
 
+      <!-- MOBILE TABS -->
       <nav class="mobile-tabs mobile-only">
         <button data-tab="overviewTab" class="tab-btn active">Overview</button>
         <button data-tab="carePlansTab" class="tab-btn">Plans</button>
@@ -71,6 +83,7 @@
         <button data-tab="actionsTab" class="tab-btn">Actions</button>
       </nav>
 
+      <!-- TAB CONTENT -->
       <div class="tab-content">
 
         <section id="overviewTab" class="tab-panel active">
