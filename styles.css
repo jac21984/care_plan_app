@@ -1,4 +1,6 @@
-/* GLOBAL */
+/* -------------------------------------------------------
+   GLOBAL RESETS & BASE STYLES
+------------------------------------------------------- */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -6,6 +8,13 @@ body {
   color: #111827;
 }
 
+h2, h3 {
+  margin-top: 0;
+}
+
+/* -------------------------------------------------------
+   HEADER
+------------------------------------------------------- */
 .app-header {
   display: flex;
   justify-content: space-between;
@@ -20,7 +29,9 @@ body {
   font-weight: bold;
 }
 
-/* HAMBURGER */
+/* -------------------------------------------------------
+   HAMBURGER BUTTON
+------------------------------------------------------- */
 .hamburger-btn {
   background: transparent;
   border: none;
@@ -34,20 +45,27 @@ body {
   height: 3px;
   margin: 4px 0;
   border-radius: 3px;
-  background: #D4AF37;
+  background: #D4AF37; /* metallic gold */
 }
 
+/* -------------------------------------------------------
+   FLOATING RIGHT-SIDE HAMBURGER CARD
+------------------------------------------------------- */
 .hamburger-menu {
   position: fixed;
-  top: 0;
-  right: -260px;
+  top: 0; /* ⭐ FIXED — ensures menu is hidden when closed */
+  right: -260px; /* hidden off-screen */
   width: 260px;
   background: #ffffff;
   border-left: 2px solid #D4AF37;
   padding: 1rem;
   z-index: 9999;
   border-radius: 12px 0 0 12px;
+
+  /* MEDIUM ELEVATION */
   box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+
+  /* SLIDE-IN ANIMATION */
   transition: right 0.35s ease;
 }
 
@@ -55,6 +73,9 @@ body {
   right: 0;
 }
 
+/* -------------------------------------------------------
+   OVERLAY
+------------------------------------------------------- */
 .hamburger-overlay {
   position: fixed;
   inset: 0;
@@ -67,7 +88,9 @@ body {
   display: block;
 }
 
-/* MENU ITEMS */
+/* -------------------------------------------------------
+   MENU ITEMS
+------------------------------------------------------- */
 .menu-item {
   display: block;
   width: 100%;
@@ -86,7 +109,9 @@ body {
   color: #fff;
 }
 
-/* HOME PAGE */
+/* -------------------------------------------------------
+   PAGE PANEL (Home, Database, Resources, Settings)
+------------------------------------------------------- */
 .page-panel {
   padding: 1.25rem;
 }
@@ -107,6 +132,7 @@ body {
 }
 
 .stat-label {
+  display: block;
   font-size: 0.85rem;
   color: #555;
 }
@@ -114,9 +140,12 @@ body {
 .stat-value {
   font-size: 1.4rem;
   font-weight: bold;
+  margin-top: 0.25rem;
 }
 
-/* BUTTONS */
+/* -------------------------------------------------------
+   BUTTONS
+------------------------------------------------------- */
 .primary-btn {
   background: #046363;
   color: white;
@@ -124,6 +153,11 @@ body {
   padding: 0.6rem 1rem;
   border-radius: 8px;
   cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.primary-btn:hover {
+  background: #034f4f;
 }
 
 .secondary-btn {
@@ -133,14 +167,23 @@ body {
   padding: 0.6rem 1rem;
   border-radius: 8px;
   cursor: pointer;
+  font-size: 0.95rem;
 }
 
-/* CRM LAYOUT */
+.secondary-btn:hover {
+  background: #046363;
+  color: #fff;
+}
+
+/* -------------------------------------------------------
+   CRM LAYOUT (client.html)
+------------------------------------------------------- */
 .crm-layout {
   display: flex;
   min-height: calc(100vh - 60px);
 }
 
+/* CLIENT LIST PANEL (left side) */
 .client-list-panel {
   width: 260px;
   background: #fff;
@@ -148,16 +191,43 @@ body {
   padding: 1rem;
 }
 
+.client-list-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.client-list-panel li {
+  padding: 0.5rem;
+  border: 2px solid #D4AF37;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.client-list-panel li.active {
+  background: #046363;
+  color: white;
+}
+
+/* CLIENT DETAIL PANEL */
 .client-detail-panel {
   flex: 1;
   padding: 1.25rem;
+}
+
+/* MOBILE CLIENT SELECTOR */
+.mobile-client-selector {
+  margin-bottom: 1rem;
 }
 
 .mobile-only {
   display: none;
 }
 
-/* TABS */
+/* -------------------------------------------------------
+   TABS
+------------------------------------------------------- */
 .detail-tabs,
 .mobile-tabs {
   display: flex;
@@ -187,17 +257,23 @@ body {
   display: block;
 }
 
-/* RESPONSIVE */
+/* -------------------------------------------------------
+   RESPONSIVE RULES
+------------------------------------------------------- */
 @media (max-width: 768px) {
+
   .desktop-only {
     display: none;
   }
+
   .mobile-only {
     display: block;
   }
+
   .crm-layout {
     flex-direction: column;
   }
+
   .client-list-panel {
     display: none;
   }
