@@ -277,4 +277,20 @@ h2, h3 {
   .client-list-panel {
     display: none;
   }
+
+  /* ⭐ MOBILE HAMBURGER FIX (auto-height, safe-area aware) */
+  .hamburger-menu {
+    position: fixed;
+    top: env(safe-area-inset-top, 0);
+    right: -260px;
+    width: 260px;
+    height: auto;
+    max-height: calc(100vh - env(safe-area-inset-top, 0));
+    overflow-y: auto;
+  }
+
+  .hamburger-overlay {
+    position: fixed;
+    inset: 0;
+  }
 }
