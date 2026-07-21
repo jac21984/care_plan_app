@@ -1,4 +1,38 @@
-/* HAMBURGER BUTTON */
+/* -------------------------------------------------------
+   GLOBAL RESETS & BASE STYLES
+------------------------------------------------------- */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f9fafb;
+  color: #111827;
+}
+
+h2, h3 {
+  margin-top: 0;
+}
+
+/* -------------------------------------------------------
+   HEADER
+------------------------------------------------------- */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #046363;
+  color: white;
+  padding: 0.75rem 1rem;
+  height: 56px; /* IMPORTANT: fixes mobile hamburger alignment */
+}
+
+.app-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+/* -------------------------------------------------------
+   HAMBURGER BUTTON
+------------------------------------------------------- */
 .hamburger-btn {
   background: transparent;
   border: none;
@@ -12,22 +46,26 @@
   height: 3px;
   margin: 4px 0;
   border-radius: 3px;
-  background: #D4AF37;
+  background: #D4AF37; /* metallic gold */
 }
 
-/* FLOATING RIGHT-SIDE CARD */
+/* -------------------------------------------------------
+   FLOATING RIGHT-SIDE HAMBURGER CARD
+------------------------------------------------------- */
 .hamburger-menu {
   position: fixed;
-  top: 0;
+  top: 56px; /* ⭐ ALWAYS BELOW HEADER — FIXES MOBILE */
   right: -260px;
   width: 260px;
-  height: auto;
   background: #ffffff;
   border-left: 2px solid #D4AF37;
   padding: 1rem;
   z-index: 9999;
   border-radius: 12px 0 0 12px;
+
+  /* MEDIUM ELEVATION */
   box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+
   transition: right 0.35s ease;
 }
 
@@ -35,7 +73,9 @@
   right: 0;
 }
 
-/* OVERLAY */
+/* -------------------------------------------------------
+   OVERLAY
+------------------------------------------------------- */
 .hamburger-overlay {
   position: fixed;
   inset: 0;
@@ -48,7 +88,9 @@
   display: block;
 }
 
-/* MENU ITEMS */
+/* -------------------------------------------------------
+   MENU ITEMS
+------------------------------------------------------- */
 .menu-item {
   display: block;
   width: 100%;
@@ -65,4 +107,174 @@
 .menu-item:hover {
   background: #046363;
   color: #fff;
+}
+
+/* -------------------------------------------------------
+   PAGE PANEL (Home, Database, Resources, Settings)
+------------------------------------------------------- */
+.page-panel {
+  padding: 1.25rem;
+}
+
+.overview-stats {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.stat-card {
+  background: #fff;
+  border: 2px solid #D4AF37;
+  padding: 1rem;
+  border-radius: 10px;
+  flex: 1;
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-top: 0.25rem;
+}
+
+/* -------------------------------------------------------
+   BUTTONS
+------------------------------------------------------- */
+.primary-btn {
+  background: #046363;
+  color: white;
+  border: 2px solid #D4AF37;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.primary-btn:hover {
+  background: #034f4f;
+}
+
+.secondary-btn {
+  background: #f3f4f6;
+  color: #111827;
+  border: 2px solid #D4AF37;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.secondary-btn:hover {
+  background: #046363;
+  color: #fff;
+}
+
+/* -------------------------------------------------------
+   CRM LAYOUT (client.html)
+------------------------------------------------------- */
+.crm-layout {
+  display: flex;
+  min-height: calc(100vh - 56px); /* match header height */
+}
+
+/* CLIENT LIST PANEL (left side) */
+.client-list-panel {
+  width: 260px;
+  background: #fff;
+  border-right: 2px solid #D4AF37;
+  padding: 1rem;
+}
+
+.client-list-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.client-list-panel li {
+  padding: 0.5rem;
+  border: 2px solid #D4AF37;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.client-list-panel li.active {
+  background: #046363;
+  color: white;
+}
+
+/* CLIENT DETAIL PANEL */
+.client-detail-panel {
+  flex: 1;
+  padding: 1.25rem;
+}
+
+/* MOBILE CLIENT SELECTOR */
+.mobile-client-selector {
+  margin-bottom: 1rem;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* -------------------------------------------------------
+   TABS
+------------------------------------------------------- */
+.detail-tabs,
+.mobile-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 0.6rem;
+  border: 2px solid #D4AF37;
+  background: #f3f4f6;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tab-btn.active {
+  background: #046363;
+  color: white;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+/* -------------------------------------------------------
+   RESPONSIVE RULES
+------------------------------------------------------- */
+@media (max-width: 768px) {
+
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;
+  }
+
+  .crm-layout {
+    flex-direction: column;
+  }
+
+  .client-list-panel {
+    display: none;
+  }
 }
